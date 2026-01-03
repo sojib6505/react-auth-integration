@@ -1,7 +1,9 @@
 import { use, useState } from "react";
 import AuthContext from "../Context/AuthContext";
 import { Link } from "react-router";
-import { FaEye,FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { sendEmailVerification } from "firebase/auth";
+import { auth } from "../firebase.init";
 
 export default function SignUp() {
 
@@ -15,7 +17,13 @@ export default function SignUp() {
         const email = form.email.value;
         const password = form.password.value
         signUp(email, password).then((user) => {
-            console.log(user)
+            sendEmailVerification(auth.currentUser)
+                .then(() => {
+                    alert('Verification Email Sent. Please check your inbox.')
+                    console.log(user.user.
+                        emailVerified
+                    )
+                })
         }).catch((error) => {
             console.log(error)
         })
@@ -35,13 +43,13 @@ export default function SignUp() {
                                 <input type="email" name="email" className="input" placeholder="Email" />
                                 <label className="label">Password</label>
                                 <div className="relative">
-                                    <input type={showPassword?'text':'password'} name="password" className="input" placeholder="Password" />
-                                      <button
-                                        onClick={()=> setShowPassword(!showPassword)}
-                                      className="absolute top-4 right-2">
+                                    <input type={showPassword ? 'text' : 'password'} name="password" className="input" placeholder="Password" />
+                                    <button
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute top-4 right-2">
                                         {showPassword ? <FaEye></FaEye> : <FaEyeSlash></FaEyeSlash>}
                                     </button>
-                                  
+
                                 </div>
                                 <div><a className="link link-hover">Forgot password?</a></div>
                                 <button className="btn btn-neutral mt-4">SignUp</button>
